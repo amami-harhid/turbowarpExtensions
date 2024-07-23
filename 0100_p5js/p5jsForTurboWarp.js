@@ -43,7 +43,7 @@ const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
         async p5jsInitialize(args, util ) {
             await import(P5JSLIB+ '?date=' + new Date().getTime());
             //console.log(p5);
-            const sub = await import('http://127.0.0.1:5500/0100_p5js/sub.js'+ '?date=' + new Date().getTime());
+            const sub = await import('https://amami-harhid.github.io/turbowarpExtensions/0100_p5js/sub.js'+ '?date=' + new Date().getTime());
             //console.log(sub.TestJs);
             this.testJs = new sub.TestJs();
             const _this = this;
