@@ -14,12 +14,17 @@ const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
                     {
                         opcode: "p5jsInitialize",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: Scratch.translate("準備"),
-                    },
-                    {
-                        opcode: "setup",
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: Scratch.translate("SETUP"),
+                        text: Scratch.translate("setup [host],[path]"),
+                        arguments: {
+                            host: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "http://127.0.0.1:5500",
+                            },
+                            path: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "/sub.js",
+                            },
+                        },
                     },
                     {
                         opcode: 'backup',
@@ -41,33 +46,41 @@ const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
             }
         }
         async p5jsInitialize(args, util ) {
-            await import(P5JSLIB+ '?date=' + new Date().getTime());
-            //console.log(p5);
-            const sub = await import('https://amami-harhid.github.io/turbowarpExtensions/0100_p5js/sub.js'+ '?date=' + new Date().getTime());
-            //console.log(sub.TestJs);
-            this.testJs = new sub.TestJs();
-            const _this = this;
-            const s = (p) => {
-                //this.__p5 = p;
-                p.setup = () => {
-                    _this.__p5 = p;
-                    _this.setup(args, util);
-                };
+            let host = args.host;
+            if(host.length == 0) {
+                host = 'http://127.0.0.1:5500';
             }
-            const _myp5 = new p5(s);
-            this.myp5 = _myp5;
+            let path = args.path;
+            if(path.length>0 && path[0] != '/') {
+                path = `/${path}`;
+            }
+            try{
+                await import(P5JSLIB+ '?date=' + new Date().getTime());
+                const sub = await import(`${host}${path}`+ '?date=' + new Date().getTime());
+                this.testJs = new sub.TestJs();
+                const _this = this;
+                const s = (p) => {
+                    p.setup = () => {
+                        _this.p5 = p;
+                        _this.setup(args, util);
+                    };
+                }
+                const _myp5 = new p5(s);
+                this.myp5 = _myp5;
+
+            }catch(e){
+                console.error(e);
+            }
         }
 
         async setup(args, util ) {
-            console.log('setup start')
-            await this.testJs.setup(this.__p5, args, util);
-            console.log('main execute end')
+            await this.testJs.setup(this.p5, args, util);
         }
         async background(args,util){
-            this.testJs.background(this.__p5, args,util);
+            this.testJs.background(this.p5, args,util);
         }
         async draw(args, util) {
-            await this.testJs.draw(this.__p5, args,util);
+            await this.testJs.draw(this.p5, args,util);
         }
 
     }
