@@ -14,7 +14,6 @@ const TestJs = class {
         this.h = canvas.height;
 
         p.createCanvas(this.w, this.h, p.WEBGL, canvas);
-        //p.background(0);
         p.blendMode(p.SCREEN);
     }
     
