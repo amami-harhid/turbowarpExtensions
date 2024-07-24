@@ -1,24 +1,35 @@
 const TestJs = class {
-
-//【Step15】
-//
-//  自由落下 する Ball-Functionを作り インスタンスとして利用
-//  5個のインスタンスを配列に格納し、配列を繰り返しで利用する
-//
     constructor() {
-        this.W = window.innerWidth;
-        this.H = window.innerHeight; 
-        this.ball = null;
+        this.rgb = {r:0, g:0, b:0};
+        this.canvasSize = {W:0, H:0};
+        console.log(Scratch.translate.language);
+        const messages = {
+            en: {
+                test1: 'EN Message 1: {var}'
+            },
+            ja: {
+                test1: '{var}がでたよ'
+            }
+        };
+        //Scratch.translate.setup(messages);
+        const text = Scratch.translate({id:"test1"})
+        console.log(text);
+        console.log(Scratch);
+        
     }
-    async setup(p, args, util) {
-        this.r = p.random(255)*0.5;
-        this.g = p.random(255)*0.5;
-        this.b = p.random(255)*0.5;
+    getCanvasSize(util){
         const gl = util.target.renderer.gl;
         const canvas = gl.canvas;
-        this.W = canvas.width;
-        this.H = canvas.height;
-        p.createCanvas( this.W, this.H, p.WEBGL, canvas); 
+        return {W:canvas.width, H:canvas.height};
+    }
+    resizeCanvas(util){
+
+    }
+    async setup(p, args, util) {
+        const gl = util.target.renderer.gl;
+        const canvas = gl.canvas;
+        this.canvasSize = {W: canvas.width, H:canvas.height};
+        p.createCanvas( canvas.width, canvas.height, p.WEBGL, canvas);
         this.balls = []
         new Array(10).fill(0).forEach(v =>{
             let c = p.color(
@@ -26,33 +37,55 @@ const TestJs = class {
                 p.random(0,255),
                 p.random(0,255),
             ); 
-            const d = p.random(200)+20;
+            const d = p.random(200)+10;
             // Ball の x座標(初期値): 半径の分をずらすことで キャンバスの中に描画させる
             // キャンバスの外に位置づけると左右の動きがおかしくなるための微調整です。
-            const x = p.random(this.W/3)+d/2;
-            const ball = new Ball(x, 0, d, -(p.random(100)+30), c);
+            const x = p.random(canvas.width/3)+d/2;
+            const ball = new Ball(x, 0, d, -(p.random(100)+50), c);
             this.balls.push(ball);
-            ball.W = this.W;
-            ball.H = this.H    
+            ball.W = canvas.width;
+            ball.H = canvas.height;
         });
+        // 径の順に並べ替える(径の昇順)
+        this.balls.sort((a,b)=>{
+            return a._r - b._r;
+        })
     }
-  
+    async background(p, args, util) {
+        let rgb;
+        if( args.COLOR ){
+            rgb = Scratch.Cast.toRgbColorObject(args.COLOR);
+        }else{
+            rgb = Scratch.Cast.toRgbColorObject("#000000")
+        }
+        console.log(rgb)
+        p.background( rgb.r, rgb.g, rgb.b);
+        this.rgb = rgb;
+    }
     async draw(p, args, util) {
-        p.background( this.r, this.g, this.b);
-        for(let ball of this.balls){
+        const gl = util.target.renderer.gl;
+        const canvas = gl.canvas;
+        if(canvas.width != this.canvasSize.W) {
+            p.createCanvas(canvas.width, canvas.height, p.WEBGL, canvas);
+            this.canvasSize = {W: canvas.width, H:canvas.height};
+        }
+        p.background( this.rgb.r, this.rgb.g, this.rgb.b);
+        this.balls.forEach(ball=>{
+            ball.W = canvas.width;
+            ball.H = canvas.height;
             const _c = ball.c;
             p.fill(_c);
             p.noStroke();    
             p.ellipse( ball.x, ball.y, ball.r );
             ball.move();
-        }
+        });
     }
 
 }
 export {TestJs};
 
 /*
- *  Ball Function
+ *  Ball クラス
  */
 const Ball = class {
     constructor(x, y, r, power, c){
@@ -62,7 +95,8 @@ const Ball = class {
         this._c = c;
         this._directionX = 1;
         this._power = power;
-        this._speed = this._power;    
+        this._speed = this._power;
+        this._counter = 0;
     }
     get c() {
         return this._c;
@@ -89,7 +123,8 @@ const Ball = class {
     // Y方向の動き
     moveY () {
         this._y += this._speed;
-        this._speed += 5;
+        // 径の大きい円は減速が速いとする
+        this._speed +=(this._r) / 25;
         if( (this.y+this._r/2) > this.H/2 ) {
             this._speed = this._power;
         }

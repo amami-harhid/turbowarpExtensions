@@ -3,18 +3,18 @@
  */
 const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
 ((Scratch) => {
-
-    class P5Js {
- 
+    class P5Js { 
         getInfo(){
             return {
-                id: "P5JS",
+                id: "P5JS2",
                 name: Scratch.translate("P5JS"),
+                color1: "#000000", // ブロックの色
+                color2: "#ff0000", // ブロック分類の〇の周囲の色
                 blocks: [
                     {
                         opcode: "p5jsInitialize",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: Scratch.translate("setup [host],[path]"),
+                        text: "setup [host]/[path]",
                         arguments: {
                             host: {
                                 type: Scratch.ArgumentType.STRING,
@@ -22,14 +22,14 @@ const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
                             },
                             path: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "/sub.js",
+                                defaultValue: "0100_p5js/sub01.js",
                             },
                         },
                     },
                     {
-                        opcode: 'backup',
+                        opcode: 'background',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: Scratch.translate("background"),
+                        text: "background [COLOR]",
                         arguments: {
                             COLOR: {
                                 type: Scratch.ArgumentType.COLOR,
@@ -40,7 +40,7 @@ const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
                     {
                         opcode: "draw",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: Scratch.translate("draw"),
+                        text: "draw",
                     },
                 ],
             }
@@ -77,13 +77,14 @@ const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
             await this.testJs.setup(this.p5, args, util);
         }
         async background(args,util){
-            this.testJs.background(this.p5, args,util);
+            this.testJs.background(this.p5, args, util);
         }
         async draw(args, util) {
             await this.testJs.draw(this.p5, args,util);
         }
 
     }
+    
     Scratch.extensions.register(new P5Js());
 
 })(Scratch);

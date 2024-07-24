@@ -18,7 +18,7 @@ class Color {
         return {r: r, g: g, b: b, a: a > 0 ? a : 255};
     }
 }
-class Cast {
+class Cast2 {
     static toNumber (value) {
         if (typeof value === 'number') {
             if (Number.isNaN(value)) {
@@ -33,6 +33,7 @@ class Cast {
         return n;
     }
     static toRgbColorObject (value) {
+        const Cast = Scratch.Cast;
         let color;
         if (typeof value === 'string' && value.substring(0, 1) === '#') {
             color = Color.hexToRgb(value);
@@ -59,6 +60,7 @@ const Liner = class {
         this._positions = [];
         this._gl = util.target.renderer.gl;
         this._twgl = twgl;
+        console.log(Scratch)
     }
     makeProgramInfo(vs, fs) {
         this._programInfo = this._twgl.createProgramInfo(this._gl, [vs, fs]);
@@ -95,6 +97,7 @@ const Liner = class {
 const TestJS = class {
 
     async executor( args, util ) {
+        console.log('Scratch=',Scratch)
         console.log('executor start')
         this.time = 0;
         this.time2 = 0;
@@ -105,6 +108,7 @@ const TestJS = class {
     }
     async background (args, util) {
         let rgb;
+        const Cast = Scratch.Cast;
         if( args.COLOR ){
             rgb = Cast.toRgbColorObject(args.COLOR);
         }else{
