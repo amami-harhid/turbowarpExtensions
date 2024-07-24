@@ -44,5 +44,4 @@ const TestJs = class {
         }
     }
 }
-//const testJS = new TestJS();
 export {TestJs};
