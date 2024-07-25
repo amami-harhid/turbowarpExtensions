@@ -1,7 +1,7 @@
 const TestJs = class {
     constructor() {
         this.rgb = {r:0, g:0, b:0};
-        this.canvasSize = {W:0, H:0};
+        this.canvasSize = {W:0, H:0};        
     }
     resizeCanvasIfChanged(p, util){
         const gl = util.target.renderer.gl;
@@ -16,6 +16,26 @@ const TestJs = class {
         const canvas = gl.canvas;
         this.canvasSize = {W: canvas.width, H:canvas.height};
         p.createCanvas( canvas.width, canvas.height, p.WEBGL, canvas);
+        this.balls = []
+        new Array(10).fill(0).forEach(v =>{
+            let c = p.color(
+                p.random(0,255),
+                p.random(0,255),
+                p.random(0,255),
+            ); 
+            const d = p.random(200)+10;
+            // Ball の x座標(初期値): 半径の分をずらすことで キャンバスの中に描画させる
+            // キャンバスの外に位置づけると左右の動きがおかしくなるための微調整です。
+            const x = p.random(canvas.width/3)+d/2;
+            const ball = new Ball(x, 0, d, -(p.random(100)+50), c);
+            this.balls.push(ball);
+            ball.W = canvas.width;
+            ball.H = canvas.height;
+        });
+        // 径の順に並べ替える(径の昇順)
+        this.balls.sort((a,b)=>{
+            return a._r - b._r;
+        })
     }
     async background(p, args, util) {
         let rgb;
@@ -24,13 +44,22 @@ const TestJs = class {
         }else{
             rgb = Scratch.Cast.toRgbColorObject("#000000")
         }
+        console.log(rgb)
         p.background( rgb.r, rgb.g, rgb.b);
         this.rgb = rgb;
     }
     async draw(p, args, util) {
         this.resizeCanvasIfChanged(p, util);
         p.background( this.rgb.r, this.rgb.g, this.rgb.b);
-        p.line(0,0, 100,100);
+        this.balls.forEach(ball=>{
+            ball.W = this.canvasSize.W;
+            ball.H = this.canvasSize.H;
+            const _c = ball.c;
+            p.fill(_c);
+            p.noStroke();    
+            p.ellipse( ball.x, ball.y, ball.r );
+            ball.move();
+        });
     }
 
 }
