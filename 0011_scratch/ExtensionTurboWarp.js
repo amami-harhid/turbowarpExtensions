@@ -4,7 +4,7 @@
 
 ((Scratch) => {
     // SVGデータをURIの形にしたもの
-    // ここで変換した（https://www.svgbackgrounds.com/tools/svg-to-css/）
+    // フリーSVGをダウンロードしたあと、ここで変換した（https://www.svgbackgrounds.com/tools/svg-to-css/）
     const SAMPLE_SVG = `data:image/svg+xml,
     <svg width="24px" height="24px" viewBox="0 0 24 24" 
     fill="none" xmlns="http://www.w3.org/2000/svg" 
