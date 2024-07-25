@@ -3,10 +3,11 @@
  */
 const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
 ((Scratch) => {
+    const HOST = "http://127.0.0.1:5500";
     class P5Js { 
         getInfo(){
             return {
-                id: "P5JS2",
+                id: "P5JS20100",
                 name: Scratch.translate("P5JS"),
                 color1: "#000000", // ブロックの色
                 color2: "#ff0000", // ブロック分類の〇の周囲の色
@@ -18,11 +19,11 @@ const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
                         arguments: {
                             host: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "http://127.0.0.1:5500",
+                                defaultValue: HOST, // MS-CODE, LiveServer(=> Go Live)
                             },
                             path: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "0100_p5js/sub01.js",
+                                defaultValue: "0100_p5js/sub01.js", // 拡張機能内で読み込むJavascript
                             },
                         },
                     },
@@ -53,7 +54,7 @@ const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
         async p5jsInitialize(args, util ) {
             let host = args.host;
             if(host.length == 0) {
-                host = 'http://127.0.0.1:5500';
+                host = HOST;
             }
             let path = args.path;
             if(path.length>0 && path[0] != '/') {
@@ -67,7 +68,8 @@ const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
                 const s = (p) => {
                     p.setup = () => {
                         _this.p5 = p;
-//                        _this.setup(args, util);
+                        // p5js で自動的に setupを実行しないようにする
+                        //_this.setup(args, util);
                     };
                 }
                 const _myp5 = new p5(s);
