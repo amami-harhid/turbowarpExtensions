@@ -16,7 +16,17 @@ const TestJs = class {
         p.createCanvas(this.w, this.h, p.WEBGL, canvas);
         p.blendMode(p.SCREEN);
     }
-    
+    async background(p, args, util) {
+        let rgb;
+        if( args.COLOR ){
+            rgb = Scratch.Cast.toRgbColorObject(args.COLOR);
+        }else{
+            rgb = Scratch.Cast.toRgbColorObject("#000000")
+        }
+        p.background( rgb.r, rgb.g, rgb.b);
+        this.rgb = rgb;
+    }
+
     async draw(p, args, util) {
         p.noLoop();
         p.stroke(255, 50);

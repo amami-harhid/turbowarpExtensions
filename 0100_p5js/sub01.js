@@ -30,6 +30,7 @@ const TestJs = class {
     async draw(p, args, util) {
         this.resizeCanvasIfChanged(p, util);
         p.background( this.rgb.r, this.rgb.g, this.rgb.b);
+        p.stroke(255,255,255);
         p.line(0,0, 100,100);
     }
 
