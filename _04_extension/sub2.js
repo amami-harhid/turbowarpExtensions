@@ -13,6 +13,7 @@ const TestJS = class{
         const dx = steps * Math.cos(radians);
         const dy = steps * Math.sin(radians);
         util.target.setXY(util.target.x + dx, util.target.y + dy);
+        
         // 現在のコスチューム
         const currentCostume = util.target.currentCostume;
         // 次のコスチュームへ切り替える
