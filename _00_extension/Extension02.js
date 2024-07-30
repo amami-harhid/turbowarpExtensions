@@ -23,5 +23,3 @@
     Scratch.extensions.register(new MyExtension());
 
 })(Scratch);
-
-

@@ -1,3 +1,7 @@
+/**
+ * 
+ */
+
 const MathUtil = class{
     static degToRad (deg) {
         return deg * Math.PI / 180;

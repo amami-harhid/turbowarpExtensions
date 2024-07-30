@@ -7,9 +7,9 @@
     const MyExtensionInfo = {
         id : 'MYEXTENSION', 
         name : '独自拡張練習',
-        color1 : '#000000', // 背景を黒に( 文字色は白固定なので背景を白にすると文字が読めない )
-        color2 : '#ffffff', // ブロックリストの円周の色( 白 )
-        color3 : '#0000ff', // ブロックの周囲の線の色（ 青 )
+        color1 : '#000000', // Primary Color: 背景を黒に( 文字色は白固定なので背景を白にすると文字が読めない )
+        color2 : '#ffffff', // Secondary Color : ブロックリストの円周の色( 白 )
+        color3 : '#0000ff', // Teritory Color : ブロックの周囲の線の色（ 青 )
         blocks : [
             {
                 opcode : 'block01',
