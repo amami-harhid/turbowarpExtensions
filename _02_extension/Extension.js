@@ -1,3 +1,8 @@
+/**
+ * Turbowarpの『カスタム拡張機能』を使おう【２】
+ * 外部JSに書いた処理を実行するサンプル
+ * 固定のHOST/DIRECTORY/FILE を使ってJSファイルを読み込む。
+ */
 ((Scratch) => {
     const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
     const MyExtensionInfo = {
@@ -35,9 +40,9 @@
             },
         ],
     }
-    const SUB_HOST = 'http://127.0.0.1:5500';
-    const SUB_PATH = 'turbowarpGithub/turbowarpExtensions/_02_extension';
-    const SUB_FILE = 'sub.js';
+    const HOST = 'http://127.0.0.1:5500';
+    const DIRECTORY = 'turbowarpGithub/turbowarpExtensions/_02_extension';
+    const FILE = 'sub.js';
     class MyExtension {
         getInfo() {
             return MyExtensionInfo;
@@ -45,7 +50,7 @@
         async block01( args, util ) {
             console.log('block01が動作したよ');
             const QUERY = new Date().getTime(); // キャッシュ回避のためいつも違う文字列にする
-            const SUB = await import(`${SUB_HOST}/${SUB_PATH}/${SUB_FILE}?_t=${QUERY}`);
+            const SUB = await import(`${HOST}/${DIRECTORY}/${FILE}?_t=${QUERY}`);
             this.testJS = new SUB.TestJS();
         }
         block02( args, util ) {

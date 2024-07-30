@@ -1,3 +1,7 @@
+/**
+ * Turbowarpの『カスタム拡張機能』を使おう【５】
+ * 外部JSファイルにて、スピーチさせる
+ */
 ((Scratch) => {
     // 歯車画像URL
     const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';

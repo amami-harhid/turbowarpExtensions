@@ -1,3 +1,7 @@
+/**
+ * Turbowarpの『カスタム拡張機能』を使おう【１】
+ * 基本構造 blockの配列
+ */
 ((Scratch) => {
     const MyExtensionInfo = {
         id : "MYEXTENSION", 

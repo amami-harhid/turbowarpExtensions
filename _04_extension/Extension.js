@@ -1,3 +1,9 @@
+/**
+ * Turbowarpの『カスタム拡張機能』を使おう【４】
+ * 外部JSファイルにて、Scratch標準ブロックを再現させる
+ * １）指定されたSTEP数だけ動かす
+ * ２）現在の位置を吹き出し表示する（言う、考える）
+ */
 ((Scratch) => {
     // 歯車画像URL
     const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
@@ -65,7 +71,27 @@
                         type: Scratch.ArgumentType.STRING,
                         menu: 'FukidashiMenu',  // menusのキー
                         defaultValue: 'say',
-                    }
+                    },
+                },
+            },
+            {
+                opcode : 'sayPositionForSec',
+                blockType : Scratch.BlockType.COMMAND,
+                text : '[GEAR_IMAGE] [SECS]秒、位置を知らせる [TYPE]',
+                arguments: {
+                    GEAR_IMAGE : {
+                        type: Scratch.ArgumentType.IMAGE,
+                        dataURI: GEAR_IMAGE_SVG_URI,
+                    },
+                    SECS : {
+                        type: Scratch.ArgumentType.NUMBER,
+                        defaultValue: 2,
+                    },
+                    TYPE : {
+                        type: Scratch.ArgumentType.STRING,
+                        menu: 'FukidashiMenu',  // menusのキー
+                        defaultValue: 'say',
+                    },
                 },
             },
         ],
@@ -116,6 +142,12 @@
             console.log( 'sayPosition TYPE=', args.TYPE ); // say or think
             // sub.js 内のメソッドを実行する
             this.testJS.sayPosition(args, util);
+        }
+        async sayPositionForSec( args, util ) {
+            console.log( 'sayPosition TYPE=', args.TYPE ); // say or think
+            console.log( 'sayPosition SECS=', args.SECS);   // second
+            // sub.js 内のメソッドを実行する
+            await this.testJS.sayPositionForSec(args, util);
         }
     }
 

@@ -1,3 +1,7 @@
+/**
+ * Turbowarpの『カスタム拡張機能』を使おう【１】
+ * 基本構造 blockの色を変えてみる
+ */
 ((Scratch) => {
     const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
     const MyExtensionInfo = {

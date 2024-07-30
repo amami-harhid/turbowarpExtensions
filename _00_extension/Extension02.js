@@ -1,3 +1,7 @@
+/**
+ * Turbowarpの『カスタム拡張機能』を使おう【１】
+ * 基本構造 id , name 
+ */
 ((Scratch) => {
     const MyExtensionInfo = {
         // 拡張機能のID,他拡張機能と被るIDはNG である

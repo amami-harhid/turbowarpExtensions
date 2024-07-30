@@ -22,6 +22,21 @@ const TestJS = class{
         const message = `x=(${position.x}), y=(${position.y})`;
         util.runtime.emit('SAY', util.target, type, message);
     }
+    
+    async sayPositionForSec(args, util){
+
+        const type = args.TYPE;
+        const position = {x:util.target.x, y:util.target.y};
+        const message = `x=(${position.x}), y=(${position.y})`;
+        util.runtime.emit('SAY', util.target, type, message);
+        const secs = Scratch.Cast.toNumber(args.SECS);
+        await this._sleep(secs*1000); // 秒数だけ待つ（次の処理へ進ませない）
+        util.runtime.emit('SAY', util.target, type, ''); // ふきだしバブルを消す
+    }
+
+    async _sleep(msec){
+        return new Promise(resolve => setTimeout(resolve, msec));
+    }
 }
 
 export {TestJS};

@@ -1,3 +1,7 @@
+/**
+ * Turbowarpの『カスタム拡張機能』を使おう【１】
+ * 基本構造 blockに対応するメソッドの動作確認
+ */
 ((Scratch) => {
     const MyExtensionInfo = {
         id : 'MYEXTENSION', 
@@ -24,5 +28,3 @@
     Scratch.extensions.register(new MyExtension());
 
 })(Scratch);
-
-

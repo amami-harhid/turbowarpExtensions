@@ -1,3 +1,8 @@
+/**
+ * Turbowarpの『カスタム拡張機能』を使おう【３】
+ * 外部JSに書いた処理を実行するサンプル
+ * ブロックで 外部JSのURLを入力する。
+ */
 ((Scratch) => {
     // 歯車画像URL
     const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
