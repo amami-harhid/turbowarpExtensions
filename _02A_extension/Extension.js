@@ -47,9 +47,9 @@
         getInfo() {
             return MyExtensionInfo;
         }
-        block01( args, util ) {
+        async block01( args, util ) {
             console.log('block01が動作したよ');
-            const SUB = import(`${HOST}/${DIRECTORY}/${FILE}`);
+            const SUB = await import(`${HOST}/${DIRECTORY}/${FILE}`);
             this.testJS = new SUB.TestJS();
         }
         block02( args, util ) {

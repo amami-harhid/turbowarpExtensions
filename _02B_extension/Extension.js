@@ -47,9 +47,10 @@
         getInfo() {
             return MyExtensionInfo;
         }
-        block01( args, util ) {
+        async block01( args, util ) {
             console.log('block01が動作したよ');
-            const SUB = import(`${HOST}/${DIRECTORY}/${FILE}`);
+            const QUERY = new Date().getTime(); // キャッシュ回避のためいつも違う文字列にする
+            const SUB = await import(`${HOST}/${DIRECTORY}/${FILE}?_t=${QUERY}`);
             this.testJS = new SUB.TestJS();
         }
         block02( args, util ) {
