@@ -1,20 +1,54 @@
 /**
  * Turbowarpの『カスタム拡張機能』を使おう【５】
- * 外部JSファイルにて、スピーチさせる
+ * 外部JSファイルにて、スピーチさせる 
  */
 ((Scratch) => {
+    /** 拡張機能ＩＤ */
+    const ExtensionID = 'MyExtensionSpeech';
+    /** 拡張機能表示名 */
+    const ExtensionName = '独自スピーチ実装';
+
     // 歯車画像URL
     const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
     // テスト用JSファイルの場所 URL
-    const TEST_URL = 'http://127.0.0.1:5500/turbowarpGithub/turbowarpExtensions/_04_extension';
+    const TEST_URL = 'http://127.0.0.1:5500/turbowarpGithub/turbowarpExtensions/_05_extension';
+    
 
-    const MyExtensionInfo = {
-        id : 'MYEXTENSION', 
-        name : '独自拡張練習',
-        color1 : '#000000', // 背景を黒に( 文字色は白固定なので背景を白にすると文字が読めない )
-        color2 : '#ffffff', // ブロックリストの円周の色( 白 )
-        color3 : '#0000ff', // ブロックの周囲の線の色（ 青 )
-        blocks : [
+    /**
+     * 言語表示名
+    */
+    const LOCALE_TEXT = {
+        ENGLISH : 'English',
+        JAPANESE: "日本語",
+    }
+    /**
+     * 言語ＩＤ
+     */
+    const LOCALE_VALUE = {
+        ENGLISH : 'en-US',
+        JAPANESE : 'ja-JP',
+    }
+    /**
+     * 性別表示名
+     */
+    const GENDER_TEXT = {
+        MALE: '男声',
+        FEMALE: '女声',
+    };
+    /**
+     * 性別ＩＤ
+     */
+    const GENDER_VALUE = {
+        MALE: 'male',
+        FEMALE: 'female',
+    }
+    /**
+     * 拡張機能定義
+     */
+    const ExtensionInfo = {
+        id: ExtensionID,
+        name: ExtensionName,
+        blocks: [
             {
                 opcode: "loadJSFileSetting",
                 blockType: Scratch.BlockType.COMMAND,
@@ -42,62 +76,80 @@
                 },
             },
             {
-                opcode : 'moveStep',
-                blockType : Scratch.BlockType.COMMAND,
-                text : '[GEAR_IMAGE] 動かす [STEPS]',
+                opcode: "speech",
+                blockType: Scratch.BlockType.COMMAND,
+                text: "[IMG_GEAR]話す [text],[locale],[gender]",
                 arguments: {
-                    GEAR_IMAGE : {
-                        type: Scratch.ArgumentType.IMAGE,
-                        dataURI: GEAR_IMAGE_SVG_URI,
+                    IMG_GEAR: {
+                        type: Scratch.ArgumentType.IMAGE,       //タイプ
+                        dataURI: GEAR_IMAGE_SVG_URI,            //歯車画像のURI
                     },
-                    STEPS : {
+                    text: {
+                        type: Scratch.ArgumentType.STRING,
+                        defaultValue: "こんにちは",
+                    },
+                    locale: {
                         type: Scratch.ArgumentType.NUMBER,
-                        defaultValue: 10,
+                        menu: 'LocaleMenu',
+                        defaultValue: LOCALE_VALUE.JAPANESE,
+                    },
+                    gender: {
+                        type: Scratch.ArgumentType.NUMBER,
+                        menu: 'GenderMenu',
+                        defaultValue: GENDER_VALUE.MALE,
                     }
                 },
             },
             {
-                opcode : 'sayPosition',
-                blockType : Scratch.BlockType.COMMAND,
-                text : '[GEAR_IMAGE] 位置を知らせる [TYPE]',
+                opcode: "speechAndWait",
+                blockType: Scratch.BlockType.COMMAND,
+                text: "[IMG_GEAR]話し終わるまで待つ[text],[locale],[gender]",
                 arguments: {
-                    GEAR_IMAGE : {
-                        type: Scratch.ArgumentType.IMAGE,
-                        dataURI: GEAR_IMAGE_SVG_URI,
+                    IMG_GEAR: {
+                        type: Scratch.ArgumentType.IMAGE,       //タイプ
+                        dataURI: GEAR_IMAGE_SVG_URI,            //歯車画像のURI
                     },
-                    TYPE : {
+                    text: {
                         type: Scratch.ArgumentType.STRING,
-                        menu: 'FukidashiMenu',  // menusのキー
-                        defaultValue: 'say',
+                        defaultValue: "こんにちは",
+                    },
+                    locale: {
+                        type: Scratch.ArgumentType.NUMBER,
+                        menu: 'LocaleMenu',
+                        defaultValue: LOCALE_VALUE.JAPANESE,
+                    },
+                    gender: {
+                        type: Scratch.ArgumentType.NUMBER,
+                        menu: 'GenderMenu',
+                        defaultValue: GENDER_VALUE.MALE,
                     }
                 },
             },
         ],
         // メニューの定義
         menus: {
-            FukidashiMenu: {
-                items: [
-                    {name:'話す', value:'say'},
-                    {name:'考える', value:'think'}, 
-                ]
-            },
             LocaleMenu: {
                 items: [
-                    {name:'日本語', value:'ja-JP'},
-                    {name:'English', value:'en-US'},
-                ]
+                    {text : LOCALE_TEXT.JAPANESE, value : LOCALE_VALUE.JAPANESE},
+                    {text : LOCALE_TEXT.ENGLISH, value : LOCALE_VALUE.ENGLISH},
+                ],
             },
             GenderMenu: {
                 items: [
-                    {name:'男', value:'male'},
-                    {name:'女', value:'female'},
-                ]
-            },
+                    {text : GENDER_TEXT.MALE, value : GENDER_VALUE.MALE},
+                    {text : GENDER_TEXT.FEMALE, value : GENDER_VALUE.FEMALE},
+                ],
+            }
+
         }
+
     }
+    /**
+     * 独自スピーチ用のクラス
+     */
     class MyExtension {
-        getInfo() {
-            return MyExtensionInfo;
+        getInfo(){
+            return ExtensionInfo;
         }
         /**
          * ロードするJSファイルのURLを設定する
@@ -113,30 +165,36 @@
          * @param {*} util 
          */
         async setup( args, util ){
-            console.log(this.jsUrl)
             try{
                 const _t = new Date().getTime();
                 const sub = await import(`${this.jsUrl}?_t=${_t}`);
                 // 読み込むJSは export {TestJS} をしている前提。
                 this.testJS = new sub.TestJS(); 
             }catch(e){
-                console.error( '読み込みに失敗した、もしくはクラス定義が存在しないみたいです', e )
+                const mesagge = '読み込みに失敗した、もしくはクラス定義が存在しないみたいです'
+                console.error( mesagge, e );
+                alert(mesagge);
             }
         }
-        moveStep( args, util ) {
-            console.log( 'moveStep STEPS=', args.STEPS );
-            // sub.js 内のメソッドを実行する
-            this.testJS.moveStep(args, util);
+        /**
+         * 話す
+         * @param {*} args 
+         * @param {*} util 
+         */
+        speech(args, util ) {
+            this.testJS.speech(args, util);
         }
-        sayPosition( args, util ) {
-            console.log( 'sayPosition TYPE=', args.TYPE );
-            // sub.js 内のメソッドを実行する
-            this.testJS.sayPosition(args, util);
+        /**
+         * 話し終わるまで待つ
+         * @param {*} args 
+         * @param {*} util 
+         */
+        async speechAndWait(args, util ) {
+            await this.testJS.speechAndWait(args, util);
         }
     }
 
+    /** 独自Speechのインスタンスを登録する */
     Scratch.extensions.register(new MyExtension());
 
 })(Scratch);
-
-
