@@ -74,6 +74,7 @@ const TestJS = class{
         }
         // キャッシュされていないとき（はじめての話すワードの場合）
         try{
+            // Turbowarpで動作するとき グローバル変数Scratchが存在している。
             const audioEngine = Scratch.vm.runtime.audioEngine;
             // 音声データを取得する
             const arrayBuffer = await this._fetchAsArrayBufferWithTimeout(url);
