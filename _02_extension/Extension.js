@@ -48,7 +48,7 @@
         ],
     }
     const HOST = 'http://127.0.0.1:5500';
-    const DIRECTORY = 'turbowarpGithub/turbowarpExtensions/_02_extension';
+    const DIRECTORY = 'turbowarpExtensions/_02_extension';
     const FILE = 'sub.js';
     class MyExtension {
         getInfo() {
