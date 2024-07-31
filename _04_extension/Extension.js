@@ -5,22 +5,28 @@
  * ２）現在の位置を吹き出し表示する（言う、考える）
  */
 ((Scratch) => {
+    // 拡張機能ＩＤ
+    const ExtensionID = 'MYEXTENSION';
+    // 拡張機能表示名
+    const ExtensionName = '独自拡張練習';
     // 歯車画像URL
-    const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
-    // テスト用JSファイルの場所 URL
-    const TEST_URL = 'http://127.0.0.1:5500/turbowarpGithub/turbowarpExtensions/_04_extension';
-
+    const GEAR_IMAGE_SVG_URI 
+        = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
+    // テスト用JSファイルの場所(HOST+DIRECTORY)
+    const TEST_URL 
+        = 'http://127.0.0.1:5500/turbowarpExtensions/_04_extension';
+    // 拡張機能定義
     const MyExtensionInfo = {
-        id : 'MYEXTENSION', 
-        name : '独自拡張練習',
+        id : ExtensionID, 
+        name : ExtensionName,
         color1 : '#000000', // 背景を黒に( 文字色は白固定なので背景を白にすると文字が読めない )
         color2 : '#ffffff', // ブロックリストの円周の色( 白 )
         color3 : '#0000ff', // ブロックの周囲の線の色（ 青 )
         blocks : [
             {
-                opcode: "loadJSFileSetting",
+                opcode: 'loadJSFileSetting',
                 blockType: Scratch.BlockType.COMMAND,
-                text: "[IMG_GEAR]JSファイルを指定する[JSURL]",
+                text: '[IMG_GEAR]JSファイルを指定する[JSURL]',
                 arguments: {
                     IMG_GEAR: {
                         type: Scratch.ArgumentType.IMAGE,       //タイプ
@@ -33,9 +39,9 @@
                 },
             },
             {
-                opcode: "setup",
+                opcode: 'setup',
                 blockType: Scratch.BlockType.COMMAND,
-                text: "[IMG_GEAR]事前準備",
+                text: '[IMG_GEAR]事前準備',
                 arguments: {
                     IMG_GEAR: {
                         type: Scratch.ArgumentType.IMAGE,       //タイプ
@@ -130,7 +136,10 @@
                 // 読み込むJSは export {TestJS} をしている前提。
                 this.testJS = new sub.TestJS(); 
             }catch(e){
-                console.error( '読み込みに失敗した、もしくはクラス定義が存在しないみたいです', e )
+                const message = '読み込みに失敗した、'
+                    +'もしくはクラス定義が存在しないみたいです';
+                console.error( message, e );
+                alert(message);
             }
         }
         moveStep( args, util ) {

@@ -9,9 +9,11 @@
     const ExtensionName = '独自スピーチ実装';
 
     // 歯車画像URL
-    const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
-    // テスト用JSファイルの場所 URL
-    const TEST_URL = 'http://127.0.0.1:5500/turbowarpGithub/turbowarpExtensions/_05_extension';
+    const GEAR_IMAGE_SVG_URI 
+        = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
+    // テスト用JSファイルの場所(HOST+DIRCTORY)
+    const TEST_URL 
+        = 'http://127.0.0.1:5500/turbowarpExtensions/_05_extension';
     
 
     /**

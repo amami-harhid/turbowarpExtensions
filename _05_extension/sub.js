@@ -159,7 +159,11 @@ const TestJS = class{
      * @param {*} util 
      */
     speech(args, util) {
-        let path = `${SERVER_HOST}/synth?locale=${args.locale}&gender=${args.gender}&text=${args.text}`;
+        let path = 
+            `${SERVER_HOST}/synth`
+            +`?locale=${args.locale}`
+            +`&gender=${args.gender}`
+            +`&text=${args.text}`;
         this._playSpeech(path, util);
     }
     /**
@@ -169,7 +173,11 @@ const TestJS = class{
      */
     async speechAndWait(args, util ) {
         // 言語、性別、テキストをもとにＵＲＬを組み立てる。
-        let path = `${SERVER_HOST}/synth?locale=${args.locale}&gender=${args.gender}&text=${args.text}`;
+        let path = 
+            `${SERVER_HOST}/synth`
+            +`?locale=${args.locale}`
+            +`&gender=${args.gender}`
+            +`&text=${args.text}`;
         // await をつけているので、再生が終わるまで待つ
         await this._playSpeech(path, util);
 

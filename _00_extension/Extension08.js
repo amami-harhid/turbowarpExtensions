@@ -3,7 +3,11 @@
  * 基本構造 blockの色を変えてみる
  */
 ((Scratch) => {
-    const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
+    // 歯車画像URL
+    const GEAR_IMAGE_SVG_URI 
+        = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
+
+    // 拡張機能定義
     const MyExtensionInfo = {
         id : 'MYEXTENSION', 
         name : '独自拡張練習',

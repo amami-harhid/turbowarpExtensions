@@ -28,10 +28,12 @@ const TestJs = class {
         this.rgb = rgb;
     }
     async draw(p, args, util) {
+        console.log('draw2')
         this.resizeCanvasIfChanged(p, util);
         p.background( this.rgb.r, this.rgb.g, this.rgb.b);
-        p.stroke(255,255,255);
-        p.line(0,0, 100,100);
+        p.strokeWeight(1);
+        p.stroke(0, 0, 0);
+        p.line(-300, 0, 200, 0);
     }
 
 }

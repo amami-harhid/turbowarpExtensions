@@ -4,10 +4,17 @@
  * 固定のHOST/DIRECTORY/FILE を使ってJSファイルを読み込む。
  */
 ((Scratch) => {
-    const GEAR_IMAGE_SVG_URI = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
+    // 拡張機能ＩＤ
+    const ExtensionID = 'MYEXTENSION';
+    // 拡張機能表示名
+    const ExtensionName = '独自拡張練習';
+    // 歯車画像URL
+    const GEAR_IMAGE_SVG_URI 
+        = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
+    // 拡張機能定義
     const MyExtensionInfo = {
-        id : 'MYEXTENSION', 
-        name : '独自拡張練習',
+        id : ExtensionID, 
+        name : ExtensionName,
         color1 : '#000000', // 背景を黒に( 文字色は白固定なので背景を白にすると文字が読めない )
         color2 : '#ffffff', // ブロックリストの円周の色( 白 )
         color3 : '#0000ff', // ブロックの周囲の線の色（ 青 )
