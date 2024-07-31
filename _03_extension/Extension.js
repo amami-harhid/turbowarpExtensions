@@ -13,7 +13,7 @@
         = 'https://amami-harhid.github.io/turbowarpExtensions/assets/gear.svg';
     // テスト用JSファイルの場所 (HOST+DIRECTORY)
     const TEST_URL 
-        = 'http://127.0.0.1:5500/turbowarpGithub/turbowarpExtensions/_03_extension';
+        = 'http://127.0.0.1:5500/turbowarpExtensions/_03_extension';
     // 拡張機能定義
     const MyExtensionInfo = {
         id : ExtensionID, 
