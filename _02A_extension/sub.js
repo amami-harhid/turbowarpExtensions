@@ -1,7 +1,7 @@
 const TestJS = class {
     
     method01() {
-        console.log( 'TestJS.method01', '実行しましたよーん' );
+        console.log( 'Test.method01', '実行しました' );
     }
 
 }

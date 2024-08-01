@@ -1,12 +1,6 @@
 // 音声合成用ＵＲＬ（scratch.mit.edu）
 const SERVER_HOST = "https://synthesis-service.scratch.mit.edu";
 
-const MathUtil = class{
-    static degToRad (deg) {
-        return deg * Math.PI / 180;
-    }
-}
-
 const TestJS = class{
     constructor() {
         /** 音声データをキャッシュするためのマップ */

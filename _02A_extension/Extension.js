@@ -48,7 +48,7 @@
         ],
     }
     const HOST = 'http://127.0.0.1:5500';
-    const DIRECTORY = 'turbowarpExtensions/_02A_extension';
+    const DIRECTORY = '_02A_extension';
     const FILE = 'sub.js';
     class MyExtension {
         getInfo() {
@@ -62,6 +62,7 @@
         block02( args, util ) {
             console.log( 'block02 TEXT=', args.TEXT );
             // sub.js 内のメソッドを実行する
+            console.log(this.testJS);
             this.testJS.method01();
         }
     }

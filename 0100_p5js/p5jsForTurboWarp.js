@@ -6,7 +6,7 @@
     // P5JS CDN
     const P5JSLIB = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.js";
     // MS-CODE, LiveServer(=> Go Live)
-    const TEST_URL = "http://127.0.0.1:5500/turbowarpGithub/turbowarpExtensions/0100_p5js/";
+    const TEST_URL = "http://127.0.0.1:5500/0100_p5js/";
     class P5JsSupportor { 
         getInfo(){
             return {
