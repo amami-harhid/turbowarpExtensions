@@ -146,7 +146,7 @@
         }
     }
 
-    /** 独自Speechのインスタンスを登録する */
+    /** カスタム拡張機能クラスのインスタンスを登録する */
     Scratch.extensions.register(new MyExtension());
 
 })(Scratch);
