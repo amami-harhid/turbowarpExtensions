@@ -132,7 +132,6 @@
          * @param {*} util 
          */
         async p5JsSetup( args, util ) {
-            console.log('p5JsSetup start', this.p5);
             await this.testJS.setup( this.p5, args, util);
         }
         /**
