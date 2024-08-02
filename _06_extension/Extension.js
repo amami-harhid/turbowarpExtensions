@@ -126,7 +126,7 @@
         }
         /**
          * Scratch3.x(=Turbowarp)のブロックから呼び出されるsetup処理
-         * P5インスタンス化のタイミングで実行される (※1)setup()の処理とは
+         * P5インスタンス化のタイミングで実行される setup()の処理(※1)とは
          * 別モノである。
          * @param {*} args 
          * @param {*} util 
@@ -137,7 +137,7 @@
         }
         /**
          * Scratch3.x(=Turbowarp)のブロックから呼び出されるdraw処理
-         * FPS間隔で実行される (※2)P5.draw()の処理とは別モノである
+         * FPS間隔で呼び出されるP5.draw()の処理(※2)とは別モノである
          * @param {*} args 
          * @param {*} util 
          */
