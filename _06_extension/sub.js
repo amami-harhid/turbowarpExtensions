@@ -2,24 +2,30 @@
  * P5JSを使い 線を引く。
  * 線は p.frameCount をもとにして回転させる
  * 使いたい最低限のメソッドだけを用意している。ロード関係などは書いていない。
+ * なお、P5JSで線を引くとき、Turbowarpの背景やスプライト描画は行われない（見えない）。
  * 
- * ※注目点
- * 1) ステージ(canvas要素)
+ * ※注目してほしい点
+ * (1) ステージ(canvas要素)
  * util.target.renderer.gl.canvas でcanvas要素を取得している
  * 
- * 2) ステージのサイズ
+ * (2) ステージのサイズ
  * canvas要素の clientWidth, clientHeight で見かけのサイズを取得している
  * 
- * 3) p.createCanvas()
+ * (3) p.createCanvas()
  * サイズは 項 2) で取得したサイズを使う
- * 第３引数に 1) で取得する canvas要素を与えることで、canvas要素の新規作成を抑止する
+ * 第３引数に (1) で取得する canvas要素を与えることで、canvas要素の新規作成を抑止する
  * 
- * 4) リサイズ処理
+ * (4) リサイズ処理
  * ステージの大きさが変わるとき、本処理内のリサイズ処理を行う
  * Scratch3.x(=Turbowarp)のステージの大きさは、Canvasのstyle属性で決まっているので
  * CanvasのStyle属性の変化を監視することにする。
  * 変更後のサイズを使い、p.createCanvas() を再実行する
  * 
+ * (5) FPS値
+ * Scratch3.x(=Turbowarp)のFPS値と P5JSのFPSを合わせておきたい。
+ * つまり、P5のframeCountのカウントアップの間隔を Turbowarpの繰り返しブロックの
+ * 繰返し間隔に合わせたい。
+ * TurbowarpのFPS値は、util.target.runtime.frameLoop.framerate で取り出す
  */
 const TestJS = class {
     /**
@@ -29,7 +35,7 @@ const TestJS = class {
      * @param {*} util 
      */
     async setup(p, args, util) {
-        // FPSをScratch3.x(=Turbowarp)と合わせる
+        // p5JSのFPSをScratch3.x(=Turbowarp)に合わせる
         p.frameRate(util.target.runtime.frameLoop.framerate);
 
         const canvas = util.target.renderer.gl.canvas;
@@ -48,23 +54,6 @@ const TestJS = class {
             attriblutes: true,
             attributeFilter: ["style"], 
         });
-
-
-        console.log('util.target.runtime',util.target.runtime);
-        console.log('util.target.runtime.frameLoop',util.target.runtime.frameLoop);
-        
-        console.log('util.target.runtime.frameLoop.framerate',util.target.runtime.frameLoop.framerate);
-    }
-    /**
-     * P5.background を実行する
-     * @param {*} p 
-     * @param {*} args 
-     * @param {*} util 
-     */
-    background(p, args, util) {
-        let rgb = Scratch.Cast.toRgbColorObject(args.COLOR);
-        this.rgb = rgb;
-        p.background( rgb.r, rgb.g, rgb.b);
     }
     /**
      * Scratchブロック P5JSDraw に対応するメソッドである。
