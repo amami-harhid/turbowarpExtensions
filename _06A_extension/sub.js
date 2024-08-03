@@ -16,11 +16,14 @@
  * 第３引数に (1) で取得する canvas要素を与えることで、canvas要素の新規作成を抑止する
  * 
  * (4) リサイズ処理
- * ステージの大きさが変わるとき、本処理内のリサイズ処理を行っていない！
+ * ステージの大きさが変わるとき、本処理内のリサイズ処理を行う
+ * Scratch3.x(=Turbowarp)のステージの大きさは、Canvasのstyle属性で決まっているので
+ * CanvasのStyle属性の変化を監視することにする。
+ * 変更後のサイズを使い、p.createCanvas() を再実行する
  * 
- * (5) P5.noLoop()
- * P5の noLoopメソッドを実行しておくと、P5.draw メソッドの繰り返し実行が抑止される。
- * Extension.js内で p5.drawメソッドを定義しているが、
+ * (6) P5.noLoop()
+ * P5の noLoopメソッドを実行すると、P5.draw メソッドは実行されません。
+ * 一方、P5._draw メソッドは 
  * 
  * 
  * 
@@ -32,11 +35,19 @@ const TestJS = class {
      * @param {*} args 
      * @param {*} util 
      */
-    setup(p, args, util) {
+    async setup(p, args, util) {
+        this.createResizeCanvas(p, util);
+        // キャンバス変更を監視、変更時は resize処理をする
+        const observer = new MutationObserver(() => {
+            this.createResizeCanvas(p, util);
+        });
+        // Scratch3.xのキャンバスサイズ変更は、style属性の値が変化している
+        // style属性の変化を監視する。
         const canvas = util.target.renderer.gl.canvas;
-        this.w = canvas.clientWidth;
-        this.h = canvas.clientHeight;
-        p.createCanvas(this.w, this.h, p.WEBGL, canvas);
+        observer.observe(canvas, {
+            attriblutes: true,
+            attributeFilter: ["style"], 
+        });
     }
     /**
      * draw処理
@@ -44,7 +55,8 @@ const TestJS = class {
      * @param {*} p 
      */
     draw(p) {
-        const w = p.canvas.clientWidth;
+        const canvas = p.canvas;
+        const w = canvas.clientWidth;
         const halfWidth = w / 2;
         const length = halfWidth * 0.5;
         const f = p.frameCount;
@@ -64,6 +76,19 @@ const TestJS = class {
         p.line( -length, 0, length, 0 );
 
     }
-}
+    /**
+     * P5のキャンバスを用意する
+     * キャンバスのリサイズのときにも使う。
+     * @param {*} p 
+     * @param {*} util 
+     */
+    createResizeCanvas(p, util) {
+        const gl = util.target.renderer.gl;
+        const canvas = util.target.renderer.gl.canvas;
+        this.w = canvas.clientWidth;
+        this.h = canvas.clientHeight;
+        p.createCanvas(this.w, this.h, p.WEBGL, canvas);
+    }
 
+}
 export {TestJS};
