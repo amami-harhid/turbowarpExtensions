@@ -5,6 +5,7 @@
  * なお、P5JSで線を引くとき、Turbowarpの背景やスプライト描画は行われない（見えない）。
  * 
  * ※注目してほしい点
+ * 
  * (1) ステージ(canvas要素)
  * util.target.renderer.gl.canvas でcanvas要素を取得している
  * 
@@ -19,9 +20,20 @@
  * ステージの大きさが変わるとき、本処理内のリサイズ処理を行っていない！
  * 
  * (5) P5.noLoop()
- * P5の noLoopメソッドを実行しておくと、P5.draw メソッドの繰り返し実行が抑止される。
- * Extension.js内で p5.drawメソッドを定義しているが、
+ * P5.setupの中で、P5.noLoopメソッドを実行しておくと、P5.draw メソッドの繰り返し実行が抑止される。
+ * (P5.setupが終わったあとに P5.drawが１回だけ実行され、以降は繰り返し実行は行われない)。
+ * Extension.js内で p5.drawメソッドを定義しているが、実行のタイミングは
+ * Scratch3.x(=Turbowarp)側の「繰り返しブロック」が繰り返すタイミングにあわせる。
+ * つまりP5のDrawのFPSは、Scratch3.x(=Turbowarp)側のFPS値に依存することになる。
  * 
+ * (6) TestJS.draw の実行の方法
+ * Block(p5JsDraw)を実行すると次が連鎖的に発生する仕組みである。
+ * ・p5._draw()の実行
+ * ・p5.redraw()の実行(p5._drawの中から呼び出す)
+ * ・p5.draw()の実行(p5.redrawの中から呼び出す)
+ * ・TestJS.draw()の実行(p5.drawの中から呼び出す)
+ * この仕組みとすることで、P5のレンダリング処理に影響を与えることなく、TestJS.drawを
+ * 実行することができる（はず）。
  * 
  * 
  */
