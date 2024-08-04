@@ -47,6 +47,7 @@ const TestJS = class {
      * @param {*} util 
      */
     async setup(p, args, util) {
+        // キャンバスを定義する（既存キャンバスをP5で利用）
         this.createResizeCanvas(p, util);
         // キャンバス変更を監視、変更時は resize処理をする
         const observer = new MutationObserver(() => {
@@ -62,12 +63,12 @@ const TestJS = class {
     }
     /**
      * draw処理
-     * P5.drawメソッドの中から呼び出される前提である
+     * P5.drawメソッドの中から呼び出される
      * @param {*} p 
      */
     draw(p) {
-        const canvas = p.canvas;
-        const w = canvas.clientWidth;
+
+        const w = p.canvas.clientWidth;
         const halfWidth = w / 2;
         const length = halfWidth * 0.5;
         const f = p.frameCount;
@@ -94,9 +95,8 @@ const TestJS = class {
      * @param {*} util 
      */
     createResizeCanvas(p, util) {
-        const gl = util.target.renderer.gl;
         const canvas = util.target.renderer.gl.canvas;
-        this.w = canvas.clientWidth;
+        this.w = p.canvas.clientWidth;
         this.h = canvas.clientHeight;
         p.createCanvas(this.w, this.h, p.WEBGL, canvas);
     }

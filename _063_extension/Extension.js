@@ -9,9 +9,9 @@
  */
 ((Scratch) => {
     /** 拡張機能ＩＤ */
-    const ExtensionID = 'MyExtension06P5JS';
+    const ExtensionID = 'MyExtension06P5JS_A';
     /** 拡張機能表示名 */
-    const ExtensionName = 'P5JS練習';
+    const ExtensionName = 'P5JS練習A';
 
     // 歯車画像URL
     const GEAR_IMAGE_SVG_URI 
@@ -23,7 +23,7 @@
 
     // テスト用JSファイルの場所(HOST+DIRCTORY)
     const TEST_URL 
-        = 'http://127.0.0.1:5500/_06_extension';
+        = 'http://127.0.0.1:5500/_062_extension';
     
     /**
      * 拡張機能定義
@@ -102,17 +102,11 @@
                 // P5JS インスタンスモード
                 const _this = this;
                 const s = (p5) => {
-                    p5.setup = () => { // ※1
-                        // p5.drawメソッドの「自動繰り返し実行」を抑止
+                    p5.setup = () => {
                         p5.noLoop();
-                        // ※2: p5 オブジェクトを退避する
                         _this.p5 = p5; 
                     };
-                    p5.draw = async () => { // ※3
-                        // p5._draw()の中から、p5.redraw()を実行
-                        // p5.redraw()の中から、p5.draw()を実行の流れである。
-                        // 「p5JsDraw」ブロックにて p5._draw()を呼び出すことで
-                        // 最終的には下記処理を実行する仕組みとしている
+                    p5.draw = async () => {
                         if(_this.testJS 
                             && _this.testJS.draw 
                             && typeof _this.testJS.draw === 'function'){
@@ -120,11 +114,6 @@
                         }
                     };
                 }
-                // P5インスタンス化、インスタンス値そのものは使われることはない。
-                // P5インスタンス化と同時に p5.setup()の処理(※1)が動きだし
-                // その後、p5.draw()の処理(※3)が１回だけ呼び出される。
-                // 以降は、「p5JsDraw」ブロックを実行するたびに、p5.draw()の処理
-                // が実行される。
                 new p5(s); 
 
             }catch(e){
@@ -163,7 +152,7 @@
          * @param {*} util 
          */
         async p5JsSetup( args, util ) {
-            this.testJS.setup( this.p5, args, util);
+            await this.testJS.setup( this.p5, args, util);
         }
         /**
          * Scratch3.x(=Turbowarp)のブロックから呼び出されるdraw処理
@@ -171,7 +160,6 @@
          * @param {*} util 
          */
         async p5JsDraw( args, util ) {
-            // p5の _drawメソッドを実行する
             this.p5._draw();
         }
     }

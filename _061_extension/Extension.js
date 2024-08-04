@@ -9,9 +9,9 @@
  */
 ((Scratch) => {
     /** 拡張機能ＩＤ */
-    const ExtensionID = 'MyExtension06P5JS_A';
+    const ExtensionID = 'MyExtension06P5JS';
     /** 拡張機能表示名 */
-    const ExtensionName = 'P5JS練習A';
+    const ExtensionName = 'P5JS練習';
 
     // 歯車画像URL
     const GEAR_IMAGE_SVG_URI 
@@ -23,7 +23,7 @@
 
     // テスト用JSファイルの場所(HOST+DIRCTORY)
     const TEST_URL 
-        = 'http://127.0.0.1:5500/_06A_extension';
+        = 'http://127.0.0.1:5500/_06_extension';
     
     /**
      * 拡張機能定義
@@ -102,18 +102,17 @@
                 // P5JS インスタンスモード
                 const _this = this;
                 const s = (p5) => {
-                    p5.setup = () => {
-                        p5.noLoop();
+                    p5.setup = () => { // ※1
+                        // ※2: p5 オブジェクトを退避する
                         _this.p5 = p5; 
                     };
-                    p5.draw = async () => {
-                        if(_this.testJS 
-                            && _this.testJS.draw 
-                            && typeof _this.testJS.draw === 'function'){
-                            _this.testJS.draw(p5);
-                        }
-                    };
+                    p5.draw = () => {
+                        
+                    }
                 }
+                // P5インスタンス化、インスタンス値そのものは使われることはない。
+                // P5インスタンス化と同時に p5.setup()の処理(※1)が動きだす
+                // p5.draw の定義がないので、draw処理は動き出さない。
                 new p5(s); 
 
             }catch(e){
@@ -152,7 +151,7 @@
          * @param {*} util 
          */
         async p5JsSetup( args, util ) {
-            await this.testJS.setup( this.p5, args, util);
+            this.testJS.setup( this.p5, args, util);
         }
         /**
          * Scratch3.x(=Turbowarp)のブロックから呼び出されるdraw処理
@@ -160,7 +159,8 @@
          * @param {*} util 
          */
         async p5JsDraw( args, util ) {
-            this.p5._draw();
+            // p5JsDrawブロックが実行される都度、TestJS.drawが動く。
+            this.testJS.draw( this.p5, args, util);
         }
     }
 

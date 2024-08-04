@@ -16,28 +16,15 @@
  * サイズは 項 2) で取得したサイズを使う
  * 第３引数に (1) で取得する canvas要素を与えることで、canvas要素の新規作成を抑止する
  * 
- * (4) リサイズ処理
- * ステージの大きさが変わるとき、本処理内のリサイズ処理を行っていない！
- * 
- * (5) P5.noLoop()
- * P5.setupの中で、P5.noLoopメソッドを実行しておくと、P5.draw メソッドの繰り返し実行が抑止される。
- * (P5.setupが終わったあとに P5.drawが１回だけ実行され、以降は繰り返し実行は行われない)。
- * Extension.js内で p5.drawメソッドを定義しているが、実行のタイミングは
- * Scratch3.x(=Turbowarp)側の「繰り返しブロック」が繰り返すタイミングにあわせる。
- * つまりP5のDrawのFPSは、Scratch3.x(=Turbowarp)側のFPS値に依存することになる。
- * 
- * (6) TestJS.draw の実行の方法
- * Block(p5JsDraw)を実行すると次が連鎖的に発生する仕組みである。
- * ・p5._draw()の実行
- * ・p5.redraw()の実行(p5._drawの中から呼び出す)
- * ・p5.draw()の実行(p5.redrawの中から呼び出す)
- * ・TestJS.draw()の実行(p5.drawの中から呼び出す)
- * この仕組みとすることで、P5のレンダリング処理に影響を与えることなく、TestJS.drawを
- * 実行することができる（はず）。
- * 
+ * (4) p5のdrawを使わないので、p5.frameCountがカウントアップされない。
+ * TestJSの中でframeCountをカウントアップする。
+ * p._setProperty('frameCount', p.frameCount + 1)
  * 
  */
 const TestJS = class {
+    constructor(){
+        this.frameCount = 0;
+    }
     /**
      * setup処理
      * @param {*} p 
@@ -52,10 +39,13 @@ const TestJS = class {
     }
     /**
      * draw処理
-     * P5.drawメソッドの中から呼び出される前提である
+     * P5.drawメソッドの中から呼び出される
      * @param {*} p 
      */
     draw(p) {
+        // frameCuontのカウントアップ
+        p._setProperty('frameCount', p.frameCount + 1);
+
         const w = p.canvas.clientWidth;
         const halfWidth = w / 2;
         const length = halfWidth * 0.5;

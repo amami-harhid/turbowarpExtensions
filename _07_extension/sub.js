@@ -9,6 +9,7 @@ const TestJSBase = class {
      * @param {*} util 
      */
     async setup(p, args, util) {
+        // キャンバスを定義する（既存キャンバスをP5で利用）
         this.createResizeCanvas(p, util);
         // キャンバス変更を監視、変更時は resize処理をする
         const observer = new MutationObserver(() => {
@@ -30,7 +31,6 @@ const TestJSBase = class {
      * @param {*} util 
      */
     createResizeCanvas(p, util) {
-        const gl = util.target.renderer.gl;
         const canvas = util.target.renderer.gl.canvas;
         this.w = canvas.clientWidth;
         this.h = canvas.clientHeight;
@@ -47,9 +47,7 @@ const TestJS = class extends TestJSBase {
      */
     async setup(p, args, util) {
         super.setup(p, args, util);
-
-        const canvas = p.canvas;
-        const h = canvas.clientHeight;
+        const h = p.canvas.clientHeight;
         // 初期位置 X軸=0, Y軸=高さ/2
         this.ball = new Ball(p, 0, -h/2+150, 100);
     }
@@ -61,8 +59,7 @@ const TestJS = class extends TestJSBase {
     draw(p) {
         const canvas = p.canvas;
         const w = canvas.clientWidth;
-        this.ball.move( 0, 5);
-        this.ball.draw();
+        this.ball.move( 0, 5); // <== 真下へ移動する
     }
 
 }
@@ -80,8 +77,9 @@ const Ball = class {
     move(dx, dy) {
         this.x += dx;
         this.y += dy;
+        this._draw();
     }
-    draw() {
+    _draw() {
         const p = this.p;
         p.fill(p.color(255,255,255));
         p.noStroke();
