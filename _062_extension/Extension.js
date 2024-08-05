@@ -21,6 +21,11 @@
     const TEST_URL 
         = 'http://127.0.0.1:5500/_062_extension';
     
+    // importするJSの中でも使えるように
+    // グローバル変数にする。
+    window._extensionGlobals = {};
+    window._extensionGlobals._EXTENSION_TEST_URL = TEST_URL;
+
     /**
      * 拡張機能定義
      */
@@ -94,19 +99,24 @@
             try{
                 // ここで P5JS CDN LIB を読み込む(キャッシュＯＫ)
                 await import(P5JSLIB);
-                // p5.setup実行直前に呼び出すフックを登録する
+                // p5.setup実行直前に呼び出すフック(beforeSetup)を登録する
+                // Canvasを使う処理をSketchの中に書きたくないので
+                // utilが参照できる箇所で定義している、
                 p5.prototype.registerMethod('beforeSetup', function(){
-                    // フック実行時、thisは p5インスタンス
+                    // このフックは１回だけ実行される
+                    // フック実行時、thisは p5インスタンスである
                     const p = this; 
-                    // p.setup へ 処理を追加する
+                    // Sketchにsetupが登録されているとき
+                    // setupを上書きする                    
                     if(p.setup){
-                        const _originalSetup = p.setup;
-                        // キャンバスサイズ変化を監視する
-                        const _canvasSizeObserver =()=>{
+                        // Sketchのsetupを退避
+                        const _setupInSketch = p.setup;
+                        // Stageサイズ変化を監視する
+                        const _stageSizeObserver =()=>{
                             const canvas = util.target.renderer.gl.canvas;
-                            // キャンバス変更を監視、変更時は resize処理をする
+                            // Stageサイズ変化時に resize処理をする
                             const observer = new MutationObserver(() => {
-                                _reuseCanvas();
+                                _resizeCanvas();
                             });
                             // Scratch3.xのキャンバスサイズ変更は、style属性の値が変化している
                             // style属性の変化を監視する。
@@ -117,22 +127,25 @@
                         };
                         // キャンバスを再利用する（既存キャンバスをP5で利用）
                         const _reuseCanvas = () => {
+                            // StageのCanvasを取得する
                             const canvas = util.target.renderer.gl.canvas;
                             const w = canvas.clientWidth;
                             const h = canvas.clientHeight;
                             p.createCanvas(w, h, p.WEBGL, canvas);
                         }
+                        const _resizeCanvas = _reuseCanvas;
                         const _wrap = () => {
-                            // キャンバスサイズ変化を監視する
-                            _canvasSizeObserver();
+                            // Stageサイズ変化を監視する
+                            // サイズｈ
+                            _stageSizeObserver();
                             // キャンバスを再利用する（既存キャンバスをP5で利用）
                             _reuseCanvas();
                             //draw実行のループを抑止
                             p.noLoop();
-                            // オリジナルのsetupを実行
-                            _originalSetup();
+                            // Sketchのsetupを実行
+                            _setupInSketch();
                         }
-                        this.setup = _wrap;
+                        p.setup = _wrap;
                     }
                 });
             }catch(e){

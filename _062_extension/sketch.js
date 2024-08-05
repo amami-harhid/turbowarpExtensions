@@ -2,8 +2,7 @@
  * 【sketch.js】
  * P5のsketchを定義する
  */
-const TEST_URL 
-= 'http://127.0.0.1:5500/_062_extension';
+const TEST_URL = _extensionGlobals._EXTENSION_TEST_URL;
 const {mySetup, myDraw} = await import(`${TEST_URL}/sub.js?t=${new Date().getTime()}`);
 
 const sketch = (p) => {

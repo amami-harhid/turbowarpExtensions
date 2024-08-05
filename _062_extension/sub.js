@@ -39,13 +39,18 @@
  * 
  * 
  */
+const TEST_URL = _extensionGlobals._EXTENSION_TEST_URL;
+const {Ball} = await import(`${TEST_URL}/ball.js?t=${new Date().getTime()}`);
+let ball;
 const mySetup = (p) => {
     console.log('test setup');
-
+    ball = new Ball();
 }
 const myDraw = (p) => {
 
     console.log('test draw');
+    ball.move();
+
     const w = p.canvas.clientWidth;
     const halfWidth = w / 2;
     const length = halfWidth * 0.5;
