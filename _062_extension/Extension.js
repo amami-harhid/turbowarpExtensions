@@ -5,7 +5,7 @@
  */
 ((Scratch) => {
     /** 拡張機能ＩＤ */
-    const ExtensionID = 'MyExtension06P5JS_A';
+    const ExtensionID = 'MyExtension063P5JS';
     /** 拡張機能表示名 */
     const ExtensionName = 'P5JS練習A';
 
@@ -19,8 +19,9 @@
 
     // テスト用JSファイルの場所(HOST+DIRCTORY)
     const TEST_URL 
-        = 'http://127.0.0.1:5500/_061_extension';
+        = 'http://127.0.0.1:5500/_062_extension';
     
+    const Sleep = (time) => new Promise((resolve) => setTimeout(resolve, time*1000));
     /**
      * 拡張機能定義
      */
@@ -95,23 +96,6 @@
                 // ここで P5JS CDN LIB を読み込む(キャッシュＯＫ)
                 await import(P5JSLIB);
 
-                // P5JS インスタンスモード
-                const _this = this;
-                const s = (p5) => {
-                    p5.setup = () => {
-                        p5.noLoop();
-                        _this.p5 = p5; 
-                    };
-                    p5.draw = async () => {
-                        if(_this.testJS 
-                            && _this.testJS.draw 
-                            && typeof _this.testJS.draw === 'function'){
-                            _this.testJS.draw(p5);
-                        }
-                    };
-                }
-                new p5(s); 
-
             }catch(e){
                 const mesagge = 'P5JSの読み込みに失敗したみたいです'
                 console.error( mesagge, e );
@@ -128,14 +112,14 @@
             try{
                 // 外部テスト用JSファイルを読み込む(キャッシュからの読み込みをしない)
                 const _t = new Date().getTime();
-                const sub = await import(`${this.jsUrl}?_t=${_t}`);
-                // テスト用クラスのインスタンス化
-                // 読み込むJSは export {TestJS} をしている前提。
-                this.testJS = new sub.TestJS();
+                const testJS = await import(`${this.jsUrl}?_t=${_t}`);
+                const sketch = testJS.sketch(util.target.renderer.gl);
+                this.p5 = new p5(sketch);
+                await Sleep(0.5);
 
             }catch(e){
                 const mesagge = 'SUB-JSの読み込みに失敗した、'
-                    +'もしくはクラス定義が存在しないみたいです';
+                    +'もしくはP5インスタンスモード開始に失敗したみたいです';
                 console.error( mesagge, e );
                 alert(mesagge);
             }
@@ -148,7 +132,7 @@
          * @param {*} util 
          */
         async p5JsSetup( args, util ) {
-            await this.testJS.setup( this.p5, args, util);
+            //await this.testJS.setup( this.p5, args, util);
         }
         /**
          * Scratch3.x(=Turbowarp)のブロックから呼び出されるdraw処理

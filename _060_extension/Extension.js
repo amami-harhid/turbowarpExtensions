@@ -9,7 +9,7 @@
  */
 ((Scratch) => {
     /** 拡張機能ＩＤ */
-    const ExtensionID = 'MyExtension06P5JS';
+    const ExtensionID = 'MyExtension060P5JS';
     /** 拡張機能表示名 */
     const ExtensionName = 'P5JS練習';
 
@@ -23,7 +23,7 @@
 
     // テスト用JSファイルの場所(HOST+DIRCTORY)
     const TEST_URL 
-        = 'http://127.0.0.1:5500/_06_extension';
+        = 'http://127.0.0.1:5500/_060_extension';
     
     /**
      * 拡張機能定義

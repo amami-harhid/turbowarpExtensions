@@ -3,7 +3,7 @@
  * 下に着地したら跳ね返る。
  * 
  */
-const TestJS = class {
+const Scetch = class {
     /**
      * setup処理
      * @param {*} p 
@@ -43,9 +43,9 @@ const TestJS = class {
         const dy = length * Math.sin(radians);
 
         // 背景の色
-        p.background( 150, 150, 150 );
+        p.background( 255, 255, 255 );
         // 線の色
-        p.stroke( 255, 255, 255 );
+        p.stroke( 0, 0, 0 );
         // 線の太さ
         p.strokeWeight(1);
         p.line( -dx, -dy, dx, dy );
@@ -60,10 +60,10 @@ const TestJS = class {
      */
     createResizeCanvas(p, util) {
         const canvas = util.target.renderer.gl.canvas;
-        this.w = p.canvas.clientWidth;
-        this.h = canvas.clientHeight;
-        p.createCanvas(this.w, this.h, p.WEBGL, canvas);
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
+        p.createCanvas(w, h, p.WEBGL, canvas);
     }
 
 }
-export {TestJS};
+export {Scetch};

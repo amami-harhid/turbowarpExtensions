@@ -9,7 +9,7 @@
  */
 ((Scratch) => {
     /** 拡張機能ＩＤ */
-    const ExtensionID = 'MyExtension06P5JS_A';
+    const ExtensionID = 'MyExtension063P5JS';
     /** 拡張機能表示名 */
     const ExtensionName = 'P5JS練習A';
 
@@ -23,7 +23,7 @@
 
     // テスト用JSファイルの場所(HOST+DIRCTORY)
     const TEST_URL 
-        = 'http://127.0.0.1:5500/_062_extension';
+        = 'http://127.0.0.1:5500/_063_extension';
     
     /**
      * 拡張機能定義
@@ -103,6 +103,7 @@
                 const _this = this;
                 const s = (p5) => {
                     p5.setup = () => {
+                        alert(`p5js version=${p5.VERSION}`);
                         p5.noLoop();
                         _this.p5 = p5; 
                     };

@@ -57,9 +57,9 @@ const TestJS = class {
         const dy = length * Math.sin(radians);
 
         // 背景の色
-        p.background( 150, 150, 150 );
+        p.background( 255, 255, 255 );
         // 線の色
-        p.stroke( 255, 255, 255 );
+        p.stroke( 0, 0, 0 );
         // 線の太さ
         p.strokeWeight(1);
         p.line( -dx, -dy, dx, dy );
