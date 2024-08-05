@@ -21,7 +21,6 @@
     const TEST_URL 
         = 'http://127.0.0.1:5500/_062_extension';
     
-    const Sleep = (time) => new Promise((resolve) => setTimeout(resolve, time*1000));
     /**
      * 拡張機能定義
      */
@@ -51,7 +50,7 @@
                     },
                     SUBURL: {
                         type: Scratch.ArgumentType.STRING,
-                        defaultValue: `${TEST_URL}/sub.js`,
+                        defaultValue: `${TEST_URL}/sketch.js`,
                     },
                 },
             },
@@ -95,7 +94,47 @@
             try{
                 // ここで P5JS CDN LIB を読み込む(キャッシュＯＫ)
                 await import(P5JSLIB);
-
+                // p5.setup実行直前に呼び出すフックを登録する
+                p5.prototype.registerMethod('beforeSetup', function(){
+                    // フック実行時、thisは p5インスタンス
+                    const p = this; 
+                    // p.setup へ 処理を追加する
+                    if(p.setup){
+                        const _originalSetup = p.setup;
+                        // キャンバスサイズ変化を監視する
+                        const _canvasSizeObserver =()=>{
+                            const canvas = util.target.renderer.gl.canvas;
+                            // キャンバス変更を監視、変更時は resize処理をする
+                            const observer = new MutationObserver(() => {
+                                _reuseCanvas();
+                            });
+                            // Scratch3.xのキャンバスサイズ変更は、style属性の値が変化している
+                            // style属性の変化を監視する。
+                            observer.observe(canvas, {
+                                attriblutes: true,
+                                attributeFilter: ["style"], 
+                            });                    
+                        };
+                        // キャンバスを再利用する（既存キャンバスをP5で利用）
+                        const _reuseCanvas = () => {
+                            const canvas = util.target.renderer.gl.canvas;
+                            const w = canvas.clientWidth;
+                            const h = canvas.clientHeight;
+                            p.createCanvas(w, h, p.WEBGL, canvas);
+                        }
+                        const _wrap = () => {
+                            // キャンバスサイズ変化を監視する
+                            _canvasSizeObserver();
+                            // キャンバスを再利用する（既存キャンバスをP5で利用）
+                            _reuseCanvas();
+                            //draw実行のループを抑止
+                            p.noLoop();
+                            // オリジナルのsetupを実行
+                            _originalSetup();
+                        }
+                        this.setup = _wrap;
+                    }
+                });
             }catch(e){
                 const mesagge = 'P5JSの読み込みに失敗したみたいです'
                 console.error( mesagge, e );
@@ -109,13 +148,12 @@
          */
         async subJsImport( args, util ){
             this.jsUrl = args.SUBURL;
-            try{
+            try{                
                 // 外部テスト用JSファイルを読み込む(キャッシュからの読み込みをしない)
                 const _t = new Date().getTime();
-                const testJS = await import(`${this.jsUrl}?_t=${_t}`);
-                const sketch = testJS.sketch(util.target.renderer.gl);
+                const {sketch} = await import(`${this.jsUrl}?_t=${_t}`);
+                // P5インスタンスを作り、p5._startを開始する
                 this.p5 = new p5(sketch);
-                await Sleep(0.5);
 
             }catch(e){
                 const mesagge = 'SUB-JSの読み込みに失敗した、'
