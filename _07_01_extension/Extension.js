@@ -1,13 +1,15 @@
 /**
  * Turbowarpの『カスタム拡張機能』を使おう【６】
- * P5JSを使い ボール（円）を描き、等速落下させる。
+ * TurbowarpでP5JSを動かす
+ * Stageをキャンバスにするために StageのCanvasを
+ * 使って createCanvasを実行する
  * 
  */
 ((Scratch) => {
     /** 拡張機能ＩＤ */
-    const ExtensionID = 'MyExtension063P5JS';
+    const ExtensionID = 'MyExtension0701P5JS';
     /** 拡張機能表示名 */
-    const ExtensionName = 'P5JS練習A';
+    const ExtensionName = 'P5JS練習';
 
     // 歯車画像URL
     const GEAR_IMAGE_SVG_URI 
@@ -19,12 +21,11 @@
 
     // テスト用JSファイルの場所(HOST+DIRCTORY)
     const TEST_URL 
-        = 'http://127.0.0.1:5500/_062_extension';
+        = 'http://127.0.0.1:5500/_07_01_extension';
     
-    // importするJSの中でも使えるように
-    // グローバル変数にする。
-    window._extensionGlobals = {};
-    window._extensionGlobals._EXTENSION_TEST_URL = TEST_URL;
+    // この拡張機能内(Module内)だけで使う前提のグローバル変数
+    window._ExtentionGlobals = {};
+    window._ExtentionGlobals.TEST_URL = TEST_URL;
 
     /**
      * 拡張機能定義
@@ -45,24 +46,9 @@
                 },
             },
             {
-                opcode: "subJsImport",
+                opcode: 'p5JsStart',
                 blockType: Scratch.BlockType.COMMAND,
-                text: "[IMG_GEAR]SUB IMPORT[SUBURL]",
-                arguments: {
-                    IMG_GEAR: {
-                        type: Scratch.ArgumentType.IMAGE,       //タイプ
-                        dataURI: GEAR_IMAGE_SVG_URI,            //歯車画像のURI
-                    },
-                    SUBURL: {
-                        type: Scratch.ArgumentType.STRING,
-                        defaultValue: `${TEST_URL}/sketch.js`,
-                    },
-                },
-            },
-            {
-                opcode: 'p5JsSetup',
-                blockType: Scratch.BlockType.COMMAND,
-                text: "[IMG_GEAR]p5JsSetup",
+                text: "[IMG_GEAR]p5Jsを開始する",
                 arguments: {
                     IMG_GEAR: {
                         type: Scratch.ArgumentType.IMAGE,       //タイプ
@@ -73,7 +59,7 @@
             {
                 opcode: "p5JsDraw",
                 blockType: Scratch.BlockType.COMMAND,
-                text: "[IMG_GEAR]p5JsDraw",
+                text: "[IMG_GEAR]P5JS描画をする",
                 arguments: {
                     IMG_GEAR: {
                         type: Scratch.ArgumentType.IMAGE,       //タイプ
@@ -99,54 +85,60 @@
             try{
                 // ここで P5JS CDN LIB を読み込む(キャッシュＯＫ)
                 await import(P5JSLIB);
-                // p5.setup実行直前に呼び出すフック(beforeSetup)を登録する
-                // Canvasを使う処理をSketchの中に書きたくないので
-                // utilが参照できる箇所で定義している、
+                // 【P5JS フックの登録】(beforeSetup)
+                // p5.setup実行直前に呼び出すフックを登録する処理。
+                // StageのCanvasをSketchの中で直接には参照できないので
+                // utilが参照できる箇所で定義した。
                 p5.prototype.registerMethod('beforeSetup', function(){
-                    // このフックは１回だけ実行される
+                    // このフックは１回だけ実行されることになっている
                     // フック実行時、thisは p5インスタンスである
                     const p = this; 
-                    // Sketchにsetupが登録されているとき
-                    // setupを上書きする                    
+                    // Sketchにsetupが登録されているときSketchのsetupを上書きする                    
                     if(p.setup){
-                        // Sketchのsetupを退避
-                        const _setupInSketch = p.setup;
-                        // Stageサイズ変化を監視する
+                        // 【StageのCanvasをP5jsのCanvasとして利用】
+                        const _reuseCanvas = () => {
+                            // StageのCanvasを取得する
+                            const canvas = util.target.renderer.gl.canvas;
+                            const w = canvas.clientWidth;
+                            const h = canvas.clientHeight;
+                            // StageのCanvasをp5jsのCanvasとして使う
+                            p.createCanvas(w, h, p.WEBGL, canvas);
+                        }
+                        // 【Stageサイズ変化監視】
+                        // Stageサイズの変化をMutationObserverにて監視し
+                        // サイズ変更時はサイズ変更後のCanvasで再度使用宣言をする
+                        const _resizeCanvas = _reuseCanvas;
                         const _stageSizeObserver =()=>{
                             const canvas = util.target.renderer.gl.canvas;
                             // Stageサイズ変化時に resize処理をする
                             const observer = new MutationObserver(() => {
                                 _resizeCanvas();
                             });
-                            // Scratch3.xのキャンバスサイズ変更は、style属性の値が変化している
-                            // style属性の変化を監視する。
+                            // Scratch3.xのキャンバスサイズ変更は、style属性の値が
+                            //　変化しているため、style属性の変化を監視する。
                             observer.observe(canvas, {
                                 attriblutes: true,
                                 attributeFilter: ["style"], 
                             });                    
                         };
-                        // キャンバスを再利用する（既存キャンバスをP5で利用）
-                        const _reuseCanvas = () => {
-                            // StageのCanvasを取得する
-                            const canvas = util.target.renderer.gl.canvas;
-                            const w = canvas.clientWidth;
-                            const h = canvas.clientHeight;
-                            p.createCanvas(w, h, p.WEBGL, canvas);
-                        }
-                        const _resizeCanvas = _reuseCanvas;
-                        const _wrap = () => {
+                        // 【Sketchのsetupを置換】
+                        // createCanvasは フックの中で直接に実行してはいけない
+                        // setup の中で createCanvasを実行するように
+                        // sketchのsetupを置き換える
+                        const _sketchSetup = p.setup;
+                        const _wraper = () => {
+                            // drawの繰返しを抑止する
+                            p.noLoop(); 
+                            // StageのCanvasをP5jsのCanvasとして利用する
+                            _reuseCanvas(); 
                             // Stageサイズ変化を監視する
-                            // サイズｈ
-                            _stageSizeObserver();
-                            // キャンバスを再利用する（既存キャンバスをP5で利用）
-                            _reuseCanvas();
-                            //draw実行のループを抑止
-                            p.noLoop();
-                            // Sketchのsetupを実行
-                            _setupInSketch();
+                            _stageSizeObserver(); 
+                            // 元のsetupを実行する
+                            _sketchSetup();                            
                         }
-                        p.setup = _wrap;
+                        p.setup = _wraper;
                     }
+
                 });
             }catch(e){
                 const mesagge = 'P5JSの読み込みに失敗したみたいです'
@@ -155,35 +147,26 @@
             }
         }
         /**
-         * SUB JSをインポートする
+         * p5JS setup を開始する
          * @param {*} args 
          * @param {*} util 
          */
-        async subJsImport( args, util ){
+        async p5JsStart( args, util ){
             this.jsUrl = args.SUBURL;
-            try{                
-                // 外部テスト用JSファイルを読み込む(キャッシュからの読み込みをしない)
+            try{
+                // Sketchを読み込む(キャッシュからの読み込みをしない)
                 const _t = new Date().getTime();
-                const {sketch} = await import(`${this.jsUrl}?_t=${_t}`);
-                // P5インスタンスを作り、p5._startを開始する
-                this.p5 = new p5(sketch);
+                const sketchUrl = `${TEST_URL}/sketch.js?_t=${_t}`;
+                const {sketch} = await import( sketchUrl );
+                const p = new p5(sketch);
+                this.p = p;
 
             }catch(e){
-                const mesagge = 'SUB-JSの読み込みに失敗した、'
-                    +'もしくはP5インスタンスモード開始に失敗したみたいです';
+                const mesagge = 'Sketchの読み込みに失敗した、'
+                    +'もしくはP5JSインスタンスモード開始に失敗した';
                 console.error( mesagge, e );
                 alert(mesagge);
             }
-        }
-        /**
-         * Scratch3.x(=Turbowarp)のブロックから呼び出されるsetup処理
-         * P5インスタンス化のタイミングで実行される setup()の処理(※1)とは
-         * 別モノである。
-         * @param {*} args 
-         * @param {*} util 
-         */
-        async p5JsSetup( args, util ) {
-            //await this.testJS.setup( this.p5, args, util);
         }
         /**
          * Scratch3.x(=Turbowarp)のブロックから呼び出されるdraw処理
@@ -191,7 +174,7 @@
          * @param {*} util 
          */
         async p5JsDraw( args, util ) {
-            this.p5._draw();
+            this.p._draw();
         }
     }
 
