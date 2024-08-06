@@ -93,7 +93,6 @@
          * @param {*} util 
          */
         async p5JsStart( args, util ){
-            this.jsUrl = args.SUBURL;
             try{
                 // Sketchを読み込む(キャッシュからの読み込みをしない)
                 const _t = new Date().getTime();

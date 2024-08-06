@@ -94,7 +94,6 @@
                     // フック実行時、thisは p5インスタンスである
                     const p = this; 
                     // Sketchにsetupが登録されているときSketchのsetupを上書きする
-                    console.log('init p.setup',p.setup);               
                     if(p.setup){
                         // 【StageのCanvasをP5jsのCanvasとして利用】
                         const _reuseCanvas = () => {
@@ -135,7 +134,6 @@
          * @param {*} util 
          */
         async p5JsStart( args, util ){
-            this.jsUrl = args.SUBURL;
             try{
                 // Sketchを読み込む(キャッシュからの読み込みをしない)
                 const _t = new Date().getTime();
