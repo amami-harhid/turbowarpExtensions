@@ -124,7 +124,7 @@
                         // setup の中で createCanvasを実行するように
                         // sketchのsetupを置き換える
                         const _sketchSetup = p.setup;
-                        const _wraper = () => {
+                        const _wrapper = () => {
                             // drawの繰返しを抑止する
                             p.noLoop(); 
                             // StageのCanvasをP5jsのCanvasとして利用する
@@ -134,7 +134,7 @@
                             // 元のsetupを実行する
                             _sketchSetup();                            
                         }
-                        p.setup = _wraper;
+                        p.setup = _wrapper;
                     }
 
                 });
