@@ -1,8 +1,7 @@
 /**
- * Turbowarpの『カスタム拡張機能』を使おう【６】
+ * Turbowarpの『カスタム拡張機能』を使おう【７】
  * TurbowarpでP5JSを動かす
- * Stageをキャンバスにするために StageのCanvasを
- * 使って createCanvasを実行する
+ * SketchのURLを指定できるブロックを追加した
  * 
  */
 ((Scratch) => {
@@ -34,6 +33,21 @@
         id: ExtensionID,
         name: ExtensionName,
         blocks: [
+            {
+                opcode: "p5jsSketchUrl",
+                blockType: Scratch.BlockType.COMMAND,
+                text: "[IMG_GEAR]P5JS Sketch⇒[SKETCH_URL]",
+                arguments: {
+                    IMG_GEAR: {
+                        type: Scratch.ArgumentType.IMAGE,       //タイプ
+                        dataURI: GEAR_IMAGE_SVG_URI,            //歯車画像のURI
+                    },
+                    SKETCH_URL: {
+                        type: Scratch.ArgumentType.STRING,
+                        defaultValue: '',
+                    }
+                },
+            },
             {
                 opcode: "p5jsImport",
                 blockType: Scratch.BlockType.COMMAND,
@@ -76,6 +90,13 @@
         getInfo(){
             return ExtensionInfo;
         }
+        p5jsSketchUrl(args, util){
+            const sketchUrl = args.SKETCH_URL;
+            this.sketchUrl = sketchUrl;
+            if(sketchUrl.length == 0) {
+                this.sketchUrl = `${TEST_URL}/sketch.js`;
+            }
+        }
         /**
          * P5JSをインポートする
          * @param {*} args 
@@ -86,11 +107,7 @@
                 // ここで P5JS CDN LIB を読み込む(キャッシュＯＫ)
                 await import(P5JSLIB);
                 // 【P5JS フックの登録】(beforeSetup)
-                // p5.setup実行直前に呼び出すフックを登録する処理。
-                // StageのCanvasをSketchの中で直接には参照できないので
-                // utilが参照できる箇所で定義した。
                 p5.prototype.registerMethod('beforeSetup', function(){
-                    // このフックは１回だけ実行されることになっている
                     // フック実行時、thisは p5インスタンスである
                     const p = this; 
                     // Sketchにsetupが登録されているときSketchのsetupを上書きする                    
@@ -105,8 +122,6 @@
                             p.createCanvas(w, h, p.WEBGL, canvas);
                         }
                         // 【Stageサイズ変化監視】
-                        // Stageサイズの変化をMutationObserverにて監視し
-                        // サイズ変更時はサイズ変更後のCanvasで再度使用宣言をする
                         const _resizeCanvas = _reuseCanvas;
                         const _stageSizeObserver =()=>{
                             const canvas = util.target.renderer.gl.canvas;
@@ -114,17 +129,12 @@
                             const observer = new MutationObserver(() => {
                                 _resizeCanvas();
                             });
-                            // Scratch3.xのキャンバスサイズ変更は、style属性の値が
-                            //　変化しているため、style属性の変化を監視する。
                             observer.observe(canvas, {
                                 attriblutes: true,
                                 attributeFilter: ["style"], 
                             });                    
                         };
                         // 【Sketchのsetupを置換】
-                        // createCanvasは フックの中で直接に実行してはいけない
-                        // setup の中で createCanvasを実行するように
-                        // sketchのsetupを置き換える
                         const _sketchSetup = p.setup;
                         const _wraper = () => {
                             // drawの繰返しを抑止する
@@ -152,11 +162,13 @@
          * @param {*} util 
          */
         async p5JsStart( args, util ){
-            this.jsUrl = args.SUBURL;
+            if(this.sketchUrl == undefined) {
+                this.sketchUrl = `${TEST_URL}/sketch.js`;
+            }
             try{
                 // Sketchを読み込む(キャッシュからの読み込みをしない)
                 const _t = new Date().getTime();
-                const sketchUrl = `${TEST_URL}/sketch.js?_t=${_t}`;
+                const sketchUrl = `${this.sketchUrl}?_t=${_t}`;
                 const {sketch} = await import( sketchUrl );
                 const p = new p5(sketch);
                 this.p = p;
