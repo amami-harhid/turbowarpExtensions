@@ -3,6 +3,8 @@
  * TurbowarpでP5JSを動かす
  * Stageをキャンバスにするために StageのCanvasを
  * 使って createCanvasを実行する
+ * Stageのサイズ変更を監視し、サイズ変更時にはP5JSの
+ * Canvasリサイズを行う。
  * 
  */
 ((Scratch) => {
