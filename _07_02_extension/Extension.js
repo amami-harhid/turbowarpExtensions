@@ -20,7 +20,7 @@
 
     // テスト用JSファイルの場所(HOST+DIRCTORY)
     const TEST_URL 
-        = 'http://127.0.0.1:5500/_07_02_extension';
+        = 'https://amami-harhid.github.io/turbowarpExtensions/07_02_extension';
     
     // この拡張機能内(Module内)だけで使う前提のグローバル変数
     window._ExtentionGlobals = {};
