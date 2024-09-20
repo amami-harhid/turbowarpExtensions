@@ -1,7 +1,7 @@
 /**
- * Turbowarpの『カスタム拡張機能』を使おう【２】
+ * Turbowarpの『カスタム拡張機能』を使おう【８】
+ * ArgumentType.SOUNDを使う練習。
  * 外部JSに書いた処理を実行するサンプル
- * 固定のHOST/DIRECTORY/FILE を使ってJSファイルを読み込む。
  */
 ((Scratch) => {
     // 拡張機能ＩＤ
@@ -48,7 +48,7 @@
         ],
     }
     const HOST = 'http://127.0.0.1:5500';
-    const DIRECTORY = '_08_extension';
+    const DIRECTORY = '08_extension';
     const FILE = 'sub.js';
     class MyExtension {
         getInfo() {

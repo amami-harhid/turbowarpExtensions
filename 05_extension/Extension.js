@@ -22,6 +22,7 @@
     const LOCALE_TEXT = {
         ENGLISH : 'English',
         JAPANESE: "日本語",
+        DEUTSCH: "Deutsch",
     }
     /**
      * 言語ＩＤ
@@ -29,6 +30,7 @@
     const LOCALE_VALUE = {
         ENGLISH : 'en-US',
         JAPANESE : 'ja-JP',
+        DEUTSCH: "de-DE",
     }
     /**
      * 性別表示名
@@ -134,6 +136,7 @@
                 items: [
                     {text : LOCALE_TEXT.JAPANESE, value : LOCALE_VALUE.JAPANESE},
                     {text : LOCALE_TEXT.ENGLISH, value : LOCALE_VALUE.ENGLISH},
+                    {text : LOCALE_TEXT.DEUTSCH, value : LOCALE_VALUE.DEUTSCH},
                 ],
             },
             GenderMenu: {
